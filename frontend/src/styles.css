@@ -1,0 +1,40 @@
+/* Animated multi-color background for the whole app */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(120deg, #1e3c72, #2a5298, #e31b23, #ff7e5f, #2b5876, #4e4376);
+  background-size: 400% 400%;
+  animation: gradientShift 18s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Subtle polish */
+.card {
+  border: 0;
+  border-radius: 12px;
+}
+
+.btn {
+  border-radius: 8px;
+}
+
+/* Gradient brand text helper */
+.brand-gradient {
+  background: linear-gradient(90deg, #e31b23, #ff7e5f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Optional glass effect utility */
+.glass {
+  background: rgba(255,255,255,0.86);
+  backdrop-filter: saturate(140%) blur(4px);
+}

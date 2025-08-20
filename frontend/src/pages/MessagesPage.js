@@ -115,50 +115,62 @@ function MessagesPage() {
   }
 
   if (error) {
-    return <div style={{color:'red'}}>{error}</div>;
+    return <div className="alert alert-danger">{error}</div>;
   }
 
   if (!selectedProjet) {
-    return <div style={{color:'red'}}>Aucun projet sélectionné.</div>;
+    return <div className="alert alert-warning">Aucun projet sélectionné.</div>;
   }
 
   return (
-    <div>
-      <h2>Messagerie du projet</h2>
-      
-      {user && user.role === "ENCADRANT" && projets.length > 0 && (
-        <div style={{ marginBottom: 20 }}>
-          <label>Projet : </label>
-          <select 
-            value={selectedProjet.id} 
-            onChange={(e) => handleProjetChange(e.target.value)}
-            style={{ marginLeft: 10, padding: 5 }}
-          >
-            {projets.map((projet) => (
-              <option key={projet.id} value={projet.id}>
-                {projet.titre}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-      
-      <div style={{ maxHeight: 300, overflowY: "auto", border: "1px solid #ccc", padding: 10 }}>
-        {messages.map((m) => (
-          <div key={m.id}>
-            <b>{m.auteur && m.auteur.nom} :</b> {m.contenu} <span style={{ fontSize: 10, color: '#888' }}>{new Date(m.date).toLocaleString()}</span>
+    <div className="row justify-content-center">
+      <div className="col-lg-10">
+        <button className="btn btn-outline-secondary btn-sm mb-3" onClick={() => window.history.back()}>← Retour</button>
+        <div className="card shadow-sm animate__animated animate__fadeIn">
+          <div className="card-body">
+            <div className="d-flex align-items-center justify-content-between mb-3">
+              <h2 className="h5 m-0">Messagerie du projet</h2>
+              {user && user.role === "ENCADRANT" && projets.length > 0 && (
+                <div className="d-flex align-items-center">
+                  <label className="me-2">Projet</label>
+                  <select 
+                    className="form-select"
+                    style={{ width: 280 }}
+                    value={selectedProjet.id} 
+                    onChange={(e) => handleProjetChange(e.target.value)}
+                  >
+                    {projets.map((projet) => (
+                      <option key={projet.id} value={projet.id}>
+                        {projet.titre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            <div className="border rounded p-3 mb-3" style={{ maxHeight: 320, overflowY: "auto" }}>
+              {messages.map((m) => (
+                <div key={m.id} className="mb-2">
+                  <b>{m.auteur && m.auteur.nom} :</b> {m.contenu} <span className="text-muted" style={{ fontSize: 12 }}>{new Date(m.date).toLocaleString()}</span>
+                </div>
+              ))}
+              {messages.length === 0 && <div className="text-muted">Aucun message pour le moment.</div>}
+            </div>
+
+            <form onSubmit={handleSend} className="d-flex gap-2">
+              <input
+                className="form-control"
+                value={contenu}
+                onChange={(e) => setContenu(e.target.value)}
+                placeholder="Votre message"
+                required
+              />
+              <button type="submit" className="btn btn-primary">Envoyer</button>
+            </form>
           </div>
-        ))}
+        </div>
       </div>
-      <form onSubmit={handleSend}>
-        <input
-          value={contenu}
-          onChange={(e) => setContenu(e.target.value)}
-          placeholder="Votre message"
-          required
-        />
-        <button type="submit">Envoyer</button>
-      </form>
     </div>
   );
 }

@@ -97,95 +97,139 @@ function ProjetEncadrePage() {
   };
 
   return (
-    <div>
-      <h2>Projets encadrés</h2>
-      {message && <p>{message}</p>}
+    <div className="">
+      <button className="btn btn-outline-secondary btn-sm mb-3" onClick={() => window.history.back()}>← Retour</button>
+      <h2 className="h4 mb-3">Projets encadrés</h2>
+      {message && <p className="alert alert-info py-2">{message}</p>}
 
       {/* Formulaire création projet partagé */}
-      <h3>Créer un projet partagé (binôme/trinôme/monome)</h3>
-      <form onSubmit={handleCreateProjet} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 20 }}>
-        <div>
-          <label>Mode de création : </label>
-          <select value={mode} onChange={e => setMode(e.target.value)} style={{ marginRight: 10 }}>
-            <option value="nouveau">Créer un nouveau projet partagé</option>
-            <option value="fusion">Garder le projet d'un étudiant comme projet partagé</option>
-          </select>
+      <div className="card shadow-sm mb-4">
+        <div className="card-body">
+          <h3 className="h5 mb-3">Créer un projet partagé (binôme/trinôme/monome)</h3>
+          <form onSubmit={handleCreateProjet}>
+            <div className="row g-3">
+              <div className="col-md-6">
+                <label className="form-label">Mode de création</label>
+                <select className="form-select" value={mode} onChange={e => setMode(e.target.value)}>
+                  <option value="nouveau">Créer un nouveau projet partagé</option>
+                  <option value="fusion">Garder le projet d'un étudiant comme projet partagé</option>
+                </select>
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Groupe</label>
+                <select className="form-select" value={selectedGroupe} onChange={e => setSelectedGroupe(e.target.value)} required>
+                  <option value="">Sélectionner un groupe</option>
+                  {groupes.map((g, idx) => <option key={String(g.id) + '-' + idx} value={g.id}>{g.nom}</option>)}
+                </select>
+              </div>
+            </div>
+
+            {etudiantsGroupe.length > 0 && (
+              <div className="mt-3">
+                <label className="form-label d-block">Étudiants (sélection multiple possible)</label>
+                {etudiantsGroupe.map((e, idx) => (
+                  <label key={String(e.id) + '-' + idx} className="me-3">
+                    <input className="form-check-input me-1" type="checkbox" value={e.id} checked={selectedEtudiants.includes(String(e.id))} onChange={handleSelectEtudiant} />
+                    {e.nom} ({e.email})
+                  </label>
+                ))}
+              </div>
+            )}
+
+            {mode === "fusion" && selectedEtudiants.length > 0 && (
+              <div className="mt-3">
+                <label className="form-label">Étudiant de référence (dont on garde le projet)</label>
+                <select className="form-select" value={referenceEtudiant} onChange={e => setReferenceEtudiant(e.target.value)} required>
+                  <option value="">Sélectionner un étudiant</option>
+                  {selectedEtudiants.map(id => {
+                    const etu = etudiantsGroupe.find(e => String(e.id) === String(id));
+                    return etu ? <option key={id} value={id}>{etu.nom} ({etu.email})</option> : null;
+                  })}
+                </select>
+              </div>
+            )}
+
+            {mode === "nouveau" && (
+              <div className="row g-2 mt-3">
+                <div className="col-md-4"><input className="form-control" name="titre" placeholder="Titre" value={formProjet.titre} onChange={handleChangeProjet} required /></div>
+                <div className="col-md-8"><input className="form-control" name="description" placeholder="Description" value={formProjet.description} onChange={handleChangeProjet} required /></div>
+                <div className="col-md-6"><input className="form-control" name="technologies" placeholder="Technologies" value={formProjet.technologies} onChange={handleChangeProjet} required /></div>
+                <div className="col-md-3"><input className="form-control" name="dateDebut" type="date" value={formProjet.dateDebut} onChange={handleChangeProjet} required /></div>
+                <div className="col-md-3"><input className="form-control" name="dateFin" type="date" value={formProjet.dateFin} onChange={handleChangeProjet} required /></div>
+                <div className="col-md-6"><input className="form-control" name="organisme" placeholder="Organisme" value={formProjet.organisme} onChange={handleChangeProjet} /></div>
+              </div>
+            )}
+
+            <button type="submit" className="btn btn-primary mt-3">Créer projet partagé</button>
+          </form>
         </div>
-        <div>
-          <label>Groupe : </label>
-          <select value={selectedGroupe} onChange={e => setSelectedGroupe(e.target.value)} required>
-            <option value="">Sélectionner un groupe</option>
-            {groupes.map((g, idx) => <option key={String(g.id) + '-' + idx} value={g.id}>{g.nom}</option>)}
-          </select>
+      </div>
+
+      <div className="row g-4">
+        <div className="col-md-6">
+          <div className="card shadow-sm h-100">
+            <div className="card-body">
+              <h3 className="h5 mb-3">Ajouter un compte-rendu</h3>
+              <form onSubmit={handleAddCompteRendu}>
+                <div className="row g-2">
+                  <div className="col-12">
+                    <select className="form-select" onChange={e => setCompteRendu({ ...compteRendu, projetId: e.target.value })} value={compteRendu.projetId}>
+                      <option value="">Sélectionner un projet</option>
+                      {projets.map(p => <option key={p.id} value={p.id}>{p.titre}</option>)}
+                    </select>
+                  </div>
+                  <div className="col-12">
+                    <textarea className="form-control" onChange={e => setCompteRendu({ ...compteRendu, contenu: e.target.value })} value={compteRendu.contenu} placeholder="Contenu du compte-rendu" required />
+                  </div>
+                  <div className="col-12">
+                    <button type="submit" className="btn btn-success">Ajouter</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-        {etudiantsGroupe.length > 0 && (
-          <div style={{ marginTop: 10 }}>
-            <label>Étudiants (sélection multiple possible) :</label><br />
-            {etudiantsGroupe.map((e, idx) => (
-              <label key={String(e.id) + '-' + idx} style={{ marginRight: 10 }}>
-                <input type="checkbox" value={e.id} checked={selectedEtudiants.includes(String(e.id))} onChange={handleSelectEtudiant} />
-                {e.nom} ({e.email})
-              </label>
+        <div className="col-md-6">
+          <div className="card shadow-sm h-100">
+            <div className="card-body">
+              <h3 className="h5 mb-3">Mettre à jour le statut d'un projet</h3>
+              <form onSubmit={handleChangeStatut}>
+                <div className="row g-2">
+                  <div className="col-12">
+                    <select className="form-select" onChange={e => setStatut({ ...statut, projetId: e.target.value })} value={statut.projetId}>
+                      <option value="">Sélectionner un projet</option>
+                      {projets.map(p => <option key={p.id} value={p.id}>{p.titre}</option>)}
+                    </select>
+                  </div>
+                  <div className="col-12">
+                    <select className="form-select" onChange={e => setStatut({ ...statut, statut: e.target.value })} value={statut.statut}>
+                      <option value="EN_COURS">En cours</option>
+                      <option value="TERMINE">Terminé</option>
+                    </select>
+                  </div>
+                  <div className="col-12">
+                    <button type="submit" className="btn btn-warning">Mettre à jour</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card shadow-sm mt-4">
+        <div className="card-body">
+          <h3 className="h5 mb-3">Liste des projets</h3>
+          <ul className="list-group">
+            {Array.isArray(projets) && projets.map((p, idx) => (
+              <li className="list-group-item" key={String(p.id) + '-' + idx}>
+                <b>{p.titre}</b> - Étudiants : {p.etudiants ? p.etudiants.map(e => e.nom).join(", ") : "-"} | Statut : {p.statut}
+              </li>
             ))}
-          </div>
-        )}
-        {mode === "fusion" && selectedEtudiants.length > 0 && (
-          <div style={{ marginTop: 10 }}>
-            <label>Étudiant de référence (dont on garde le projet) : </label>
-            <select value={referenceEtudiant} onChange={e => setReferenceEtudiant(e.target.value)} required>
-              <option value="">Sélectionner un étudiant</option>
-              {selectedEtudiants.map(id => {
-                const etu = etudiantsGroupe.find(e => String(e.id) === String(id));
-                return etu ? <option key={id} value={id}>{etu.nom} ({etu.email})</option> : null;
-              })}
-            </select>
-          </div>
-        )}
-        {mode === "nouveau" && (
-          <div style={{ marginTop: 10 }}>
-            <input name="titre" placeholder="Titre" value={formProjet.titre} onChange={handleChangeProjet} required />
-            <input name="description" placeholder="Description" value={formProjet.description} onChange={handleChangeProjet} required />
-            <input name="technologies" placeholder="Technologies" value={formProjet.technologies} onChange={handleChangeProjet} required />
-            <input name="dateDebut" type="date" value={formProjet.dateDebut} onChange={handleChangeProjet} required />
-            <input name="dateFin" type="date" value={formProjet.dateFin} onChange={handleChangeProjet} required />
-            <input name="organisme" placeholder="Organisme" value={formProjet.organisme} onChange={handleChangeProjet} />
-          </div>
-        )}
-        <button type="submit" style={{ marginTop: 10 }}>Créer projet partagé</button>
-      </form>
-
-      <h3>Ajouter un compte-rendu</h3>
-      <form onSubmit={handleAddCompteRendu}>
-        <select onChange={e => setCompteRendu({ ...compteRendu, projetId: e.target.value })} value={compteRendu.projetId}>
-          <option value="">Sélectionner un projet</option>
-          {projets.map(p => <option key={p.id} value={p.id}>{p.titre}</option>)}
-        </select>
-        <textarea onChange={e => setCompteRendu({ ...compteRendu, contenu: e.target.value })} value={compteRendu.contenu} placeholder="Contenu du compte-rendu" required />
-        <button type="submit">Ajouter</button>
-      </form>
-
-      <h3 style={{ marginTop: 20 }}>Mettre à jour le statut d'un projet</h3>
-      <form onSubmit={handleChangeStatut}>
-        <select onChange={e => setStatut({ ...statut, projetId: e.target.value })} value={statut.projetId}>
-          <option value="">Sélectionner un projet</option>
-          {projets.map(p => <option key={p.id} value={p.id}>{p.titre}</option>)}
-        </select>
-        <select onChange={e => setStatut({ ...statut, statut: e.target.value })} value={statut.statut}>
-          <option value="EN_COURS">En cours</option>
-          <option value="TERMINE">Terminé</option>
-        </select>
-        <button type="submit">Mettre à jour</button>
-      </form>
-
-      <h3 style={{ marginTop: 20 }}>Liste des projets</h3>
-      <ul>
-        {Array.isArray(projets) && projets.map((p, idx) => (
-          <li key={String(p.id) + '-' + idx}>
-            <b>{p.titre}</b> - Étudiants : {p.etudiants ? p.etudiants.map(e => e.nom).join(", ") : "-"} | Statut : {p.statut}
-          </li>
-        ))}
-      </ul>
-      {!Array.isArray(projets) || projets.length === 0 ? <p>Aucun projet trouvé.</p> : null}
+          </ul>
+          {!Array.isArray(projets) || projets.length === 0 ? <p className="mt-2">Aucun projet trouvé.</p> : null}
+        </div>
+      </div>
     </div>
   );
 }

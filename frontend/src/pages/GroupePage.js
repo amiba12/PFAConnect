@@ -22,25 +22,29 @@ function GroupePage() {
   };
 
   return (
-    <div>
-      <h2>Gestion des groupes</h2>
-      <form onSubmit={handleCreate}>
-        <input
-          value={nom}
-          onChange={(e) => setNom(e.target.value)}
-          placeholder="Nom du groupe"
-          required
-        />
-        <button type="submit">Créer</button>
-      </form>
-      {message && <p>{message}</p>}
-      <ul>
-        {groupes.map((g) => (
-          <li key={g.id}>
-            <b>{g.nom}</b> - {g.etudiants && g.etudiants.length} étudiants
-          </li>
-        ))}
-      </ul>
+    <div className="card shadow-sm animate__animated animate__fadeIn">
+      <div className="card-body">
+        <h2 className="h5 mb-3">Gestion des groupes</h2>
+        <form onSubmit={handleCreate} className="d-flex gap-2 mb-3">
+          <input
+            className="form-control"
+            value={nom}
+            onChange={(e) => setNom(e.target.value)}
+            placeholder="Nom du groupe"
+            required
+          />
+          <button type="submit" className="btn btn-primary">Créer</button>
+        </form>
+        {message && <p className="alert alert-info py-2">{message}</p>}
+        <ul className="list-group">
+          {groupes.map((g) => (
+            <li key={g.id} className="list-group-item d-flex justify-content-between align-items-center">
+              <b>{g.nom}</b>
+              <span className="badge bg-secondary">{g.etudiants && g.etudiants.length} étudiants</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

@@ -40,45 +40,61 @@ function Dashboard() {
     window.location.href = "/login";
   };
 
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  const BackButton = () => (
+    <button className="btn btn-outline-secondary btn-sm mb-3" onClick={() => window.history.back()}>
+      ← Retour
+    </button>
+  );
+
+  if (error) return <div className="alert alert-danger">{error}</div>;
   if (!user) return <div>Chargement...</div>;
+
+  const Button = ({ children, onClick, variant = "primary" }) => (
+    <button className={`btn btn-${variant} me-2 mb-2`} onClick={onClick}>{children}</button>
+  );
+
+  const Wrapper = ({ title, children }) => (
+    <div className="card shadow-sm">
+      <div className="card-body">
+        <h2 className="h4 mb-3">{title}</h2>
+        <div className="d-flex flex-wrap">{children}</div>
+        <div className="mt-3">
+          <Button variant="danger" onClick={handleLogout}>Déconnexion</Button>
+        </div>
+      </div>
+    </div>
+  );
 
   if (user.role === "ETUDIANT") {
     return (
-      <div>
-        <h2>Dashboard Étudiant</h2>
-        <button onClick={() => navigate("/projet")}>Mon projet</button>
-        <button onClick={() => navigate("/rapports")}>Mes rapports</button>
-        <button onClick={() => navigate("/messages")}>Messagerie</button>
-        <button onClick={() => navigate("/compterendus")}>Comptes-rendus de séance</button>
-        <button onClick={handleLogout} style={{ marginTop: 20, backgroundColor: 'red', color: 'white' }}>Déconnexion</button>
-      </div>
+      <Wrapper title="Dashboard Étudiant">
+        <Button onClick={() => navigate("/projet")}>Mon projet</Button>
+        <Button variant="secondary" onClick={() => navigate("/rapports")}>Mes rapports</Button>
+        <Button variant="success" onClick={() => navigate("/messages")}>Messagerie</Button>
+        <Button variant="warning" onClick={() => navigate("/compterendus")}>Comptes-rendus de séance</Button>
+      </Wrapper>
     );
   }
   if (user.role === "ENCADRANT") {
     return (
-      <div>
-        <h2>Dashboard Encadrant</h2>
-        <button onClick={() => navigate("/projets-encadres")}>Projets encadrés</button>
-        <button onClick={() => navigate("/messages")}>Messagerie</button>
-        <button onClick={() => navigate("/compterendus")}>Comptes-rendus de séance</button>
-        <button onClick={handleLogout} style={{ marginTop: 20, backgroundColor: 'red', color: 'white' }}>Déconnexion</button>
-      </div>
+      <Wrapper title="Dashboard Encadrant">
+        <Button onClick={() => navigate("/projets-encadres")}>Projets encadrés</Button>
+        <Button variant="success" onClick={() => navigate("/messages")}>Messagerie</Button>
+        <Button variant="warning" onClick={() => navigate("/compterendus")}>Comptes-rendus de séance</Button>
+      </Wrapper>
     );
   }
   if (user.role === "ADMIN") {
     return (
-      <div>
-        <h2>Dashboard Administrateur</h2>
-        <button onClick={() => navigate("/groupes")}>Gestion des groupes</button>
-        <button onClick={() => navigate("/projet")}>Tous les projets</button>
-        <button onClick={() => navigate("/admin-users")}>Valider les comptes</button>
-        <button onClick={() => navigate("/etudiants")}>Liste des étudiants</button>
-        <button onClick={() => navigate("/utilisateurs")}>Gestion des utilisateurs</button>
-        <button onClick={() => navigate("/groupes-assignation")}>Gérer les groupes (assignation)</button>
-        <button onClick={() => navigate("/supervision-projets")}>Superviser les projets</button>
-        <button onClick={handleLogout} style={{ marginTop: 20, backgroundColor: 'red', color: 'white' }}>Déconnexion</button>
-      </div>
+      <Wrapper title="Dashboard Administrateur">
+        <Button onClick={() => navigate("/groupes")}>Gestion des groupes</Button>
+        <Button variant="secondary" onClick={() => navigate("/projet")}>Tous les projets</Button>
+        <Button variant="info" onClick={() => navigate("/admin-users")}>Valider les comptes</Button>
+        <Button variant="dark" onClick={() => navigate("/etudiants")}>Liste des étudiants</Button>
+        <Button variant="primary" onClick={() => navigate("/utilisateurs")}>Gestion des utilisateurs</Button>
+        <Button variant="warning" onClick={() => navigate("/groupes-assignation")}>Gérer les groupes (assignation)</Button>
+        <Button variant="success" onClick={() => navigate("/supervision-projets")}>Superviser les projets</Button>
+      </Wrapper>
     );
   }
   return null;

@@ -9,24 +9,21 @@ function SupervisionProjetsPage() {
   }, []);
 
   return (
-    <div>
-      <h2>Supervision des projets</h2>
-      <ul>
-        {projets.map((p) => (
-          <li key={p.id}>
-            <b>{p.titre}</b>
-            <br />
-            - Étudiants : {p.etudiants ? p.etudiants.map(e => e.nom).join(", ") : "-"}
-            <br />
-            - Statut : {p.statut}
-            <br />
-            - Groupe : {p.groupe ? p.groupe.nom : "-"}
-            <br />
-            - Encadrant : {p.groupe && p.groupe.encadrant ? p.groupe.encadrant.nom : "-"}
-          </li>
-        ))}
-      </ul>
-      {projets.length === 0 && <p>Aucun projet trouvé.</p>}
+    <div className="card shadow-sm animate__animated animate__fadeIn">
+      <div className="card-body">
+        <h2 className="h5 mb-3">Supervision des projets</h2>
+        <ul className="list-group">
+          {projets.map((p) => (
+            <li key={p.id} className="list-group-item">
+              <b>{p.titre}</b>
+              <div className="text-muted" style={{ fontSize: 14 }}>
+                Étudiants : {p.etudiants ? p.etudiants.map(e => e.nom).join(", ") : "-"} • Statut : {p.statut} • Groupe : {p.groupe ? p.groupe.nom : "-"} • Encadrant : {p.groupe && p.groupe.encadrant ? p.groupe.encadrant.nom : "-"}
+              </div>
+            </li>
+          ))}
+        </ul>
+        {projets.length === 0 && <p className="text-muted mt-2">Aucun projet trouvé.</p>}
+      </div>
     </div>
   );
 }
