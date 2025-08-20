@@ -59,7 +59,7 @@ function Dashboard() {
     return (
       <div>
         <h2>Dashboard Encadrant</h2>
-        <button onClick={() => navigate("/projet")}>Projets encadrés</button>
+        <button onClick={() => navigate("/projets-encadres")}>Projets encadrés</button>
         <button onClick={() => navigate("/messages")}>Messagerie</button>
         <button onClick={() => navigate("/compterendus")}>Comptes-rendus de séance</button>
         <button onClick={handleLogout} style={{ marginTop: 20, backgroundColor: 'red', color: 'white' }}>Déconnexion</button>
