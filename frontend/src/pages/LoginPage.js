@@ -30,7 +30,7 @@ function LoginPage() {
   return (
     <div className="row justify-content-center mt-5">
       <div className="col-md-5">
-        <div className="card shadow-sm animate__animated animate__fadeIn">
+        <div className="card shadow-sm animate__animated animate__fadeIn glass">
           <div className="card-body">
             <h2 className="h5 mb-3 text-center"><span className="brand-gradient">PFAConnect</span> - Connexion</h2>
             {error && <div className="alert alert-danger py-2">{error}</div>}

@@ -40,63 +40,76 @@ function Dashboard() {
     window.location.href = "/login";
   };
 
-  const BackButton = () => (
-    <button className="btn btn-outline-secondary btn-sm mb-3" onClick={() => window.history.back()}>
-      ← Retour
-    </button>
-  );
-
   if (error) return <div className="alert alert-danger">{error}</div>;
   if (!user) return <div>Chargement...</div>;
 
-  const Button = ({ children, onClick, variant = "primary" }) => (
-    <button className={`btn btn-${variant} me-2 mb-2`} onClick={onClick}>{children}</button>
-  );
-
-  const Wrapper = ({ title, children }) => (
-    <div className="card shadow-sm">
+  const Welcome = ({ name, tagline, actions }) => (
+    <div className="card shadow-sm animate__animated animate__fadeIn">
       <div className="card-body">
-        <h2 className="h4 mb-3">{title}</h2>
-        <div className="d-flex flex-wrap">{children}</div>
+        <h2 className="h4 mb-1">Bienvenue, {name}</h2>
+        <div className="text-muted mb-3" style={{ fontSize: 14 }}>{tagline}</div>
+        <div className="row g-3">
+          {actions.map((a, idx) => (
+            <div key={idx} className="col-6 col-md-4 col-lg-3">
+              <div
+                role="button"
+                className={`card h-100 border-0 shadow-sm animate__animated animate__fadeInUp`}
+                onClick={a.onClick}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="card-body d-flex flex-column justify-content-center text-center">
+                  <span className={`badge text-bg-${a.variant} mb-2`} style={{ alignSelf: 'center' }}>{a.badge || '●'}</span>
+                  <div className="fw-medium" style={{ lineHeight: 1.2 }}>{a.label}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
         <div className="mt-3">
-          <Button variant="danger" onClick={handleLogout}>Déconnexion</Button>
+          <button className="btn btn-danger" onClick={handleLogout}>Déconnexion</button>
         </div>
       </div>
     </div>
   );
 
+  const slogans = {
+    ETUDIANT: "Avance pas à pas, ton PFA prend forme.",
+    ENCADRANT: "Guide et inspire tes projets encadrés.",
+    ADMIN: "Organise, supervise et facilite la réussite.",
+  };
+
   if (user.role === "ETUDIANT") {
-    return (
-      <Wrapper title="Dashboard Étudiant">
-        <Button onClick={() => navigate("/projet")}>Mon projet</Button>
-        <Button variant="secondary" onClick={() => navigate("/rapports")}>Mes rapports</Button>
-        <Button variant="success" onClick={() => navigate("/messages")}>Messagerie</Button>
-        <Button variant="warning" onClick={() => navigate("/compterendus")}>Comptes-rendus de séance</Button>
-      </Wrapper>
-    );
+    const actions = [
+      { label: "Mon projet", variant: "primary", onClick: () => navigate("/projet") },
+      { label: "Mes rapports", variant: "secondary", onClick: () => navigate("/rapports") },
+      { label: "Messagerie", variant: "success", onClick: () => navigate("/messages") },
+      { label: "Comptes-rendus", variant: "warning", onClick: () => navigate("/compterendus") },
+    ];
+    return <Welcome name={user.nom} tagline={slogans.ETUDIANT} actions={actions} />;
   }
+
   if (user.role === "ENCADRANT") {
-    return (
-      <Wrapper title="Dashboard Encadrant">
-        <Button onClick={() => navigate("/projets-encadres")}>Projets encadrés</Button>
-        <Button variant="success" onClick={() => navigate("/messages")}>Messagerie</Button>
-        <Button variant="warning" onClick={() => navigate("/compterendus")}>Comptes-rendus de séance</Button>
-      </Wrapper>
-    );
+    const actions = [
+      { label: "Projets encadrés", variant: "primary", onClick: () => navigate("/projets-encadres") },
+      { label: "Messagerie", variant: "success", onClick: () => navigate("/messages") },
+      { label: "Comptes-rendus", variant: "warning", onClick: () => navigate("/compterendus") },
+    ];
+    return <Welcome name={user.nom} tagline={slogans.ENCADRANT} actions={actions} />;
   }
+
   if (user.role === "ADMIN") {
-    return (
-      <Wrapper title="Dashboard Administrateur">
-        <Button onClick={() => navigate("/groupes")}>Gestion des groupes</Button>
-        <Button variant="secondary" onClick={() => navigate("/projet")}>Tous les projets</Button>
-        <Button variant="info" onClick={() => navigate("/admin-users")}>Valider les comptes</Button>
-        <Button variant="dark" onClick={() => navigate("/etudiants")}>Liste des étudiants</Button>
-        <Button variant="primary" onClick={() => navigate("/utilisateurs")}>Gestion des utilisateurs</Button>
-        <Button variant="warning" onClick={() => navigate("/groupes-assignation")}>Gérer les groupes (assignation)</Button>
-        <Button variant="success" onClick={() => navigate("/supervision-projets")}>Superviser les projets</Button>
-      </Wrapper>
-    );
+    const actions = [
+      { label: "Gestion des groupes", variant: "primary", onClick: () => navigate("/groupes") },
+      { label: "Tous les projets", variant: "secondary", onClick: () => navigate("/projet") },
+      { label: "Valider les comptes", variant: "info", onClick: () => navigate("/admin-users") },
+      { label: "Liste des étudiants", variant: "dark", onClick: () => navigate("/etudiants") },
+      { label: "Gestion des utilisateurs", variant: "primary", onClick: () => navigate("/utilisateurs") },
+      { label: "Assignation groupes", variant: "warning", onClick: () => navigate("/groupes-assignation") },
+      { label: "Superviser les projets", variant: "success", onClick: () => navigate("/supervision-projets") },
+    ];
+    return <Welcome name={user.nom} tagline={slogans.ADMIN} actions={actions} />;
   }
+
   return null;
 }
 

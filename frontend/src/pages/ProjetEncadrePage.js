@@ -97,7 +97,7 @@ function ProjetEncadrePage() {
   };
 
   return (
-    <div className="">
+    <div className="animate__animated animate__fadeIn">
       <button className="btn btn-outline-secondary btn-sm mb-3" onClick={() => window.history.back()}>← Retour</button>
       <h2 className="h4 mb-3">Projets encadrés</h2>
       {message && <p className="alert alert-info py-2">{message}</p>}
@@ -220,13 +220,21 @@ function ProjetEncadrePage() {
       <div className="card shadow-sm mt-4">
         <div className="card-body">
           <h3 className="h5 mb-3">Liste des projets</h3>
-          <ul className="list-group">
+          <div className="row g-3">
             {Array.isArray(projets) && projets.map((p, idx) => (
-              <li className="list-group-item" key={String(p.id) + '-' + idx}>
-                <b>{p.titre}</b> - Étudiants : {p.etudiants ? p.etudiants.map(e => e.nom).join(", ") : "-"} | Statut : {p.statut}
-              </li>
+              <div className="col-md-6 col-lg-4" key={String(p.id) + '-' + idx}>
+                <div className="card h-100">
+                  <div className="card-body">
+                    <h4 className="h6 mb-2">{p.titre}</h4>
+                    <div className="text-muted" style={{ fontSize: 14 }}>
+                      Étudiants : {p.etudiants ? p.etudiants.map(e => e.nom).join(", ") : "-"}<br/>
+                      Statut : {p.statut}
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
           {!Array.isArray(projets) || projets.length === 0 ? <p className="mt-2">Aucun projet trouvé.</p> : null}
         </div>
       </div>
